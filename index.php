@@ -10,6 +10,8 @@ header("Chache-control: private");
 require_once("include/register.php");
 include "config.php";
 include "include/db.php";
+require_once("include/link.php");
+require_once("include/maps.php");
 //**************
 
 $mydb = new Db($config["dbName"], $config["dbHost"], $config["dbUser"], $config["dbPass"]);
@@ -132,6 +134,91 @@ if(isset($_POST["user_mail"]) && isset($_POST["user_pass"]) && !isset($_POST["ge
                                 <?php
 								register();
                             break;
+							case "addLink":
+                                if($_SESSION["portal_status"] != 1) {
+                                    alert("You are not logged in!");
+                                    history(-1);
+                                    break;
+                                }
+                                ?>
+                                    <h1>[ Add Link ]</h1>
+                                <?php
+								addLink();
+                            break;
+                            case "sendLink":
+                                if($_SESSION["portal_status"] != 1) {
+                                    alert("You are not logged in!");
+                                    history(-1);
+                                    break;
+                                }
+                                ?>
+                                    <h1>[ Send Link ]</h1>
+                                <?php
+								sendLink();
+                            break;
+							case "allMaps":
+                                if($_SESSION["portal_status"] != 1) {
+                                    alert("You are not logged in!");
+                                    history(-1);
+                                    break;
+                                }
+                                ?>
+                                    <h1>[ Manage Folders ]</h1>
+                                    <p class="pText">Folders are organizational units by which you can organize your links. Each link can be assigned to one folder.</p>
+                                    <p class="pText">Manage your folders:</p>
+                                    <table cellpadding="0" cellspacing="0" class="tableLinks2" style="width: 250px;">
+                                    <tr>
+                                        <td class="tdLinkHeadder">Folder name</td>
+                                        <td class="tdLinkHeadder">Delete</td>
+                                    </tr>
+                                <?php
+								allMaps();
+                                ?>
+                                    </table>
+                                    <p class="pSubtitles"><?php echo warning("Deleting a folder will also delete its links!"); ?></p>
+                                    <table cellpadding="0" cellspacing="0" class="tableLinks2" width="500">
+                                    <tr>
+                                        <td class="tdLinkHeadder">Title</td>
+                                        <td class="tdLinkHeadder">Domain</td>
+                                        <td class="tdLinkHeadder">Folder</td>
+                                        <td class="tdLinkHeadder">Home page</td>
+                                        <td class="tdLinkHeadder">Delete</td>
+                                    </tr>
+                                <?php
+                                    if($_GET["map"]) {
+                                        $mapId = clean($_GET["map"]);
+                                        vsiLinkiManage($_SESSION["portal_id"], $mapId);
+                                    } else {
+                                        vsiLinkiManage($_SESSION["portal_id"], 0);
+                                    }
+                                ?>
+                                    </table>
+                                <?php
+                                if(isset($_GET["deleteMap"])) { 
+                                    deleteMap($_SESSION["portal_id"]);
+                                }
+                                if($_GET["action"] == "setMap") {
+                                    $link_id = clean($_GET["id"]);
+                                    $link_map_id = clean($_GET["value"]);
+                                    
+                                    $update = "UPDATE links SET map_id = " . $link_map_id . " WHERE id = " . $link_id;
+                                    $mydb->query($update);
+                                    
+                                    redirect("index.php?page=allMaps");
+                                }
+                                if($_GET["action"] == "setToHomePage") {
+                                    $link_id = clean($_GET["id"]);
+                                    $link_status = clean($_GET["value"]);
+                                    
+                                    if($link_status == 1)
+                                        $update = "UPDATE links SET status = 3 WHERE id = " . $link_id;
+                                    else if($link_status == 0)
+                                        $update = "UPDATE links SET status = 1 WHERE id = " . $link_id;
+                                    $mydb->query($update);
+                                    
+                                    redirect("index.php?page=allMaps");
+                                }
+                            break;
                             case "manageAcc":
                                 if($_SESSION["portal_status"] != 1) {
                                     alert("You are not logged in!");
@@ -151,6 +238,7 @@ if(isset($_POST["user_mail"]) && isset($_POST["user_pass"]) && !isset($_POST["ge
                             <h1>[ My Links ]</h1>
                             <table cellpadding="0" cellspacing="4" id="tableLinksHome">
                                     <a href="index.php?page=manageAcc">Uredi račun</a>
+									<a href="index.php?page=allMaps">Uredi povezave</a> 
                             </table>
                             <?php
                             
