@@ -1,0 +1,454 @@
+﻿/**** GLOBAL ****/
+body {
+	font-family: "Segoe UI","Helvetica Neue", Helvetica, Arial, sans-serif;
+	font-size: 12px;
+	font-variant: normal; 
+	font-style: normal; 
+	font-weight: normal;  
+	text-decoration: none;
+	margin: 0px;
+    margin-top: 0px;
+	margin-bottom: 0px;
+	vertical-align: middle;
+	background: url("../images/background.png") repeat-x top left;
+	background-color: #0f6d38;
+	color: #FFF;
+}
+
+h1 {
+	font-weight: normal;
+    padding-top: 0px;
+	padding-bottom: 10px;
+    margin-top: 0px;
+    display: inline;
+    padding-left: 0px;
+	font-family: "Segoe UI Light","Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+h2 {
+    text-align: left;
+    padding-left: 10px;
+}
+
+a:link {
+	color: #00b1de;
+	text-decoration: none;
+}
+
+img {
+    border: 0px;
+}
+
+form {
+	display: inline;
+}
+
+a:visited {
+	color: #00b1de;
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+/**** /GLOBAL ****/
+
+/**** STRUCTURE ****/
+.tableLinks {
+    border: 1px solid green;
+    width: 80%;
+}
+
+#tableTitle {
+	margin: 0px 0px 0px 0px;
+	padding: 0px 0px 0px 0px;
+    width: 100%;
+    font-size: 20px;
+    color: #d6fbd6;
+    height: 70px;
+	padding-top: 10%;
+}
+
+#tableTitle h1{
+	font-family: "Segoe UI Light","Helvetica Neue", Helvetica, Arial, sans-serif;
+    padding-top: 0px;
+    margin-top: 0px;
+    display: inline;
+	color: #FFF;
+    padding-left: 0px;
+	display: inline;
+	font-weight: normal;
+}
+
+#tableTitle p{
+	font-family: "Segoe UI Light","Helvetica Neue", Helvetica, Arial, sans-serif;
+    padding-top: 0px;
+    margin-top: 0px;
+    display: inline;
+	color: #FFF;
+    padding-left: 5px;
+	display: inline;
+}
+
+#tdLevoTableTitle {
+	padding-left: 4%;
+	width: 60%;
+}
+
+#tdDesnoTableTitle {
+	text-align: right;
+	vertical-align: bottom;
+	font-size: 18px;
+	padding: 0px 10% 8px 0px;
+}
+
+#tableMain {
+    width: 90%;
+    height: 600px;
+    /* background-color: #edf6ed; 
+    border: 1px solid #067906;*/
+	border-top: 0px;
+    padding: 6px;
+    padding-top: 0px;
+    vertical-align: top;
+	
+}
+
+#tdNavigacija {
+    text-align: center;
+    /*height: 40px;
+    background: url("../images/navbg.png") no-repeat top right;*/
+}
+
+#tdContent {
+    vertical-align: top;
+	text-align: left;
+    /*background: url("../images/bodybck.png") no-repeat bottom right;*/
+}
+
+#tdContent h1 {
+	display: none;
+}
+
+#tdCopy {
+    height: 30px;
+    font-size: 11px;
+    text-align: center;
+}
+
+#tableRegister {	
+	margin-top: 20px;
+	padding: 5px;
+	background-color: #F7F7F7;
+    width: 400px;
+}
+
+/**** /STRUCTURE ****/
+
+/**** BASIC ELEMENTS ****/
+#addMap {
+	position: absolute;
+	right: 0px;
+	height: 100%;
+	border-left: 0px solid #C3E0D0;
+	background-color: #111111;
+	width: 240px;
+	display: none;
+	padding-top: 5%;
+	text-align: center;
+}
+
+#addLink {
+	position: absolute;
+	right: 0px;
+	height: 100%;
+	border-left: 0px solid #C3E0D0;
+	background-color: #111111;
+	width: 240px;
+	display: none;
+	padding-top: 5%;
+	text-align: center;
+}
+
+#sendLink {
+	position: absolute;
+	right: 0px;
+	height: 100%;
+	border-left: 0px solid #C3E0D0;
+	background-color: #111111;
+	width: 240px;
+	display: none;
+	padding-top: 5%;
+	text-align: center;
+}
+
+#charmsRight {
+	position: absolute;
+	right: 0px;
+	height: 100%;
+	border-left: 0px solid #C3E0D0;
+	background-color: #111111;
+	vertical-align: middle;
+	width: 80px;
+	display: none;
+	white-space: nowrap;
+}
+
+#charmsRightActivate {
+	position: absolute;
+	right: 0px;
+	height: 100%;
+	width: 100px;
+	font-family: "Segoe UI","Helvetica Neue", Helvetica, Arial, sans-serif;
+    color: #FFF;
+    font-size: 11px;
+	text-align: right;
+}
+
+#charmsBottom {
+	position: absolute;
+	bottom: 0px;
+	width: 100%;
+	border-top: 0px solid silver;
+	background-color: #111111;
+	text-align: center;
+	height: 50px;
+	vertical-align: middle;
+	padding-top: 10px;
+	display: none;
+}
+
+#charmsBottomActivate {
+	position: absolute;
+	text-align: center;
+	bottom: 0px;
+	width: 100%;
+	height: 6%;
+	padding-top: 1%;
+	font-family: "Segoe UI","Helvetica Neue", Helvetica, Arial, sans-serif;
+    color: #FFF;
+    font-size: 11px;
+	vertical-align: middle;
+}
+
+.divMeniItem {
+	cursor: pointer;
+	padding-bottom: 15px;
+	font-size: 13px;
+	font-weight: normal;
+	color: #FFF;
+    background-color: none;
+	font-family: "Segoe UI","Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+#ulPageNav {
+    list-style-type: none;
+    list-style-image: none;
+	margin: 0px 0px 0px 0px;
+	padding: 0px;
+	text-align: center;
+	/*vertical-align: middle;*/
+	height: 100%;
+}
+
+.button {
+    border:1px solid silver;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: normal;
+    line-height: normal;
+    padding:2px 5px;
+    text-align: center;
+    white-space: nowrap;
+    height: 35px;
+	color: #FFF;
+	background-color: #302f37;
+}
+
+.field {
+	border: 1px solid #030;
+	background-color: #F7F7F7;
+	padding: 2px;
+	font-size: 14px;
+	color: #000;
+	font-weight: normal;
+	width: 200px;
+    height: 30px;
+}
+
+/**** /BASIC ELEMENTS ****/
+
+/**** LINK DISPLAY ****/
+.tdLinkHome {
+	text-align: center;
+    color: #FFF;
+    width: 25%;
+    padding: 4px;
+    cursor: pointer;
+	display: none;
+	min-height: 4%;
+}
+
+.tdLinkHome1 {
+	background-color: #7733ab;
+	border: 1px solid #8e83ac;
+}
+
+.tdLinkHome2 {
+	background-color: #007300;
+	border: 1px solid #60a960;
+}
+
+.tdLinkHome3 {
+	background-color: #5658b8;
+	border: 1px solid #7a92ac;
+}
+
+.tdLinkHome4 {
+	background-color: #ce6857;
+	border: 1px solid #bf9682;
+}
+
+.tdLinkHome5 {
+	background-color: #00b1de;
+	border: 1px solid #95DFF0;
+}
+
+.tdLinkHome6 {
+	background-color: #e2a019;
+	border: 1px solid #F0D192;
+}
+
+.tdLink1 {
+    background-color: #DDDDDD;
+	text-align: center;
+    color: #000;
+    height: 35px;
+}
+
+.tdLink2 {
+    background-color: #F7F7F7;
+	text-align: center;
+    color: #000;
+    height: 35px;
+}
+
+#tableLinksHome {
+    margin-left: 55px;
+    margin-top: 20px;
+	width: 100%
+}
+
+.tableLinks2 {
+    border: 1px solid #067906;
+	width: 750px;
+}
+
+.tdLinkHeadder {
+	background-color: #060;
+	text-align: center;
+    color: #FFF;
+    height: 20px;
+    cursor: default;
+}
+
+.tdLinkHeadderStats {
+	font-size: 10px;
+	background-color: #060;
+	text-align: center;
+    color: #FFF;
+    height: 15px;
+	padding: 0px 5px 0px 5px;
+}
+/**** /LINK DISPLAY ****/
+
+/**** MESSAGES ****/
+.warning {
+	background-color: #FFDFDF;
+	color: #000;
+	border: 1px solid maroon;
+    padding: 3px;
+}
+
+.error {
+	background-color: #FFD9D9;
+	color: #000;
+	border: 1px solid #F00;
+    padding: 3px;
+}
+
+.info {
+	background-color: #DDDDFF;
+	color: #000;
+	border: 1px solid #00C;
+    padding: 3px;
+}
+/**** /MESSAGES ****/
+
+/**** PARAGRAPHS ****/
+.pLinkName {
+    font-family: "Segoe UI Light","Helvetica Neue", Helvetica, Arial, sans-serif;
+    color: #FFF;
+    font-size: 20px;
+}
+
+.pLinkDomain {
+    font-weight: normal;
+    color: #000;
+    font-size: 12px;
+}
+
+.pLinkSender {
+    font-weight: normal;
+    color: #FFF;
+    font-size: 10px;
+}
+
+.pLinkUrl {
+    font-weight: normal;
+    color: #FFF;
+    font-size: 9px;
+}
+
+
+.pText {
+    padding: 10px;
+    padding-bottom: 0px;
+    font-weight: normal;
+    font-size: 13px;
+    text-align: left;
+}
+
+.pSubtitles {
+    font-weight: normal;
+    color: #999;
+    font-size: 11px;
+    padding-left: 10px;
+}
+/**** /PARAGRAPHS ****/
+
+/**** MENUS ****/
+#folders {
+	display: none;
+    position: absolute;
+	bottom: 10%;
+	left: 5%;
+	width: 350px;
+	min-height: 250px;
+	color: #FFF;
+	background: url("../images/icons/cancle.png") no-repeat top right;
+	background-color: #111111;
+	font-family: "Segoe UI Light","Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.innerMenu {
+    list-style: none;
+    font-size: 20px;
+	width: 100px;
+}
+
+.innerMenu li:hover {
+    cursor: pointer;
+}
+/**** /MENUS ****/

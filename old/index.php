@@ -1,67 +1,22 @@
 ﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <?php
-require_once("include/general.php"); 
-$mobile_browser = '0';
- 
-if (preg_match('/(up.browser|up.link|mmp|symbian|smartphone|midp|wap|phone|android)/i', strtolower($_SERVER['HTTP_USER_AGENT']))) {
-    $mobile_browser++;
-}
- 
-if ((strpos(strtolower($_SERVER['HTTP_ACCEPT']),'application/vnd.wap.xhtml+xml') > 0) or ((isset($_SERVER['HTTP_X_WAP_PROFILE']) or isset($_SERVER['HTTP_PROFILE'])))) {
-    $mobile_browser++;
-}    
- 
-$mobile_ua = strtolower(substr($_SERVER['HTTP_USER_AGENT'], 0, 4));
-$mobile_agents = array(
-    'w3c ','acs-','alav','alca','amoi','audi','avan','benq','bird','blac',
-    'blaz','brew','cell','cldc','cmd-','dang','doco','eric','hipt','inno',
-    'ipaq','java','jigs','kddi','keji','leno','lg-c','lg-d','lg-g','lge-',
-    'maui','maxo','midp','mits','mmef','mobi','mot-','moto','mwbp','nec-',
-    'newt','noki','oper','palm','pana','pant','phil','play','port','prox',
-    'qwap','sage','sams','sany','sch-','sec-','send','seri','sgh-','shar',
-    'sie-','siem','smal','smar','sony','sph-','symb','t-mo','teli','tim-',
-    'tosh','tsm-','upg1','upsi','vk-v','voda','wap-','wapa','wapi','wapp',
-    'wapr','webc','winw','winw','xda ','xda-');
- 
-if (in_array($mobile_ua,$mobile_agents)) {
-    $mobile_browser++;
-}
- 
-if (strpos(strtolower($_SERVER['ALL_HTTP']),'OperaMini') > 0) {
-    $mobile_browser++;
-}
- 
-if (strpos(strtolower($_SERVER['HTTP_USER_AGENT']),'windows') > 0) {
-    $mobile_browser = 0;
-}
- 
-if ($mobile_browser > 0) {
-   redirect("m/index.php");
-}
-else { 
-    
 global $config;
 global $mydb;
 session_start();
 header("Chache-control: private");
 // Includes
+require_once("include/general.php");
 require_once("include/register.php");
 require_once("include/link.php");
 require_once("include/stats.php");
+require_once("include/notes.php");
 require_once("include/maps.php");
 include "config.php";
 include "include/db.php";
-//**************
+//
 
 $mydb = new Db($config["dbName"], $config["dbHost"], $config["dbUser"], $config["dbPass"]);
 $mydb1 = new Db($config["dbName"], $config["dbHost"], $config["dbUser"], $config["dbPass"]);
-
-//mylink.si GO - url shortener!!!
-if(isset($_GET["go"])) {
-	redirect($_GET["go"]);
-}
-
-//**************
 
 if(!isset($_SESSION["portal_status"])) {
     $_SESSION["portal_status"] = 0;
@@ -72,7 +27,7 @@ if(!isset($_SESSION["portal_status"])) {
     		parse_str($_COOKIE[$cookie_name]);
     	
     		// Make a verification
-    		$select = "SELECT * FROM users WHERE mail = '" . clean($mail) . "' AND password = '" . clean($hash) . "'";  
+    		$select = "SELECT * FROM users WHERE mail = '" . $mail . "' AND password = '" . $hash . "'";  
     		$mydb->query($select);
     		if($mydb->recno() == 1) {
     			// Register the session
@@ -83,14 +38,14 @@ if(!isset($_SESSION["portal_status"])) {
                     $logini = $vrstica["logins"] + 1;
         			$_SESSION["portal_status"] = 1;
         			$_SESSION["portal_mail"] = $mail;
-                    $_SESSION["portal_user"] =  $vrstica["name"] . " " . $vrstica["surname"];
+                    $_SESSION["portal_user"] = $usr;
                     $_SESSION["portal_id"] = $id;
         			if(md5("1") == $role)
         				$_SESSION["portal_priv"] = 1;
         			if(md5("2") == $role)
         				$_SESSION["portal_priv"] = 2;
                     $date = date("Y") . "-" . date("m") . "-" . date("d");
-                    $dodajLogin = "UPDATE users SET logins = " . clean($logini) . ", last_login = '" . clean($date) . "' WHERE id = " . clean($_SESSION["portal_id"]);
+                    $dodajLogin = "UPDATE users SET logins = " . $logini . ", last_login = '" . $date . "' WHERE id = " . $_SESSION["portal_id"];
                     $mydb->query($dodajLogin);
                 }
     		}
@@ -104,7 +59,7 @@ if(isset($_GET["odjava"])) {
 	$_SESSION["portal_status"] = 0;
 	if(isSet($_COOKIE[$cookie_name])) {
 		// remove 'site_auth' cookie
-		setcookie($cookie_name, '', time() - $cookie_time);
+		setcookie ($cookie_name, '', time() - $cookie_time);
 	}
 }
 
@@ -113,7 +68,7 @@ if(isset($_POST["user_mail"]) && isset($_POST["user_pass"]) && !isset($_POST["ge
 	$mail = clean($_POST["user_mail"]);
 	$pass = clean($_POST["user_pass"]);
 	$post_autologin = $_POST['autologin'];
-	$select = "SELECT * FROM users WHERE mail = '" . clean($mail) . "' AND password = '" . md5(clean($pass)) . "'";  
+	$select = "SELECT * FROM users WHERE mail = '" . $mail . "' AND password = '" . md5($pass) . "'";  
 	$mydb->query($select);
 	if($mydb->recno() == 1) {
 		$vrstica = $mydb->row();
@@ -121,7 +76,7 @@ if(isset($_POST["user_mail"]) && isset($_POST["user_pass"]) && !isset($_POST["ge
             echo info("User is not activated. Check your mail for conformation mail.");
         } else {
     		$_SESSION["portal_status"] = 1;
-    		$_SESSION["portal_user"] = $vrstica["name"] . " " . $vrstica["surname"];
+    		$_SESSION["portal_user"] = $vrstica["name"];
     		$_SESSION["portal_priv"] = $vrstica["role"];
             $_SESSION["portal_id"] = $vrstica["id"];
             $logini = $vrstica["logins"] + 1;
@@ -129,14 +84,14 @@ if(isset($_POST["user_mail"]) && isset($_POST["user_pass"]) && !isset($_POST["ge
             // Set cookie
     		if($post_autologin == 1) {
     			$password_hash = md5($pass);
-    			setcookie ($cookie_name, 'mail=' . $mail . '&hash=' . $password_hash . '&role=' . md5($vrstica["role"]) . '&usr=' . $vrstica["name"] . ' ' . $vrstica["surname"] . '&id=' . $vrstica["id"], time() + $cookie_time);
+    			setcookie ($cookie_name, 'mail=' . $mail . '&hash=' . $password_hash . '&role=' . md5($vrstica["role"]) . '&usr=' . $vrstica["name"] . '&id=' . $vrstica["id"], time() + $cookie_time);
     		}
             //
             
             $date = date("Y") . "-" . date("m") . "-" . date("d");
-            $dodajLogin = "UPDATE users SET logins = " . clean($logini) . ", last_login = '" . clean($date) . "' WHERE id = " . clean($_SESSION["portal_id"]);
+            $dodajLogin = "UPDATE users SET logins = " . $logini . ", last_login = '" . $date . "' WHERE id = " . $_SESSION["portal_id"];
             $mydb->query($dodajLogin);
-            redirect("/");
+            redirect("index.php");
         }
 	}
 	else {
@@ -146,96 +101,104 @@ if(isset($_POST["user_mail"]) && isset($_POST["user_pass"]) && !isset($_POST["ge
 }
 //
 ?>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:og="http://ogp.me/ns#" xmlns:fb="http://www.facebook.com/2008/fbml">
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <meta property="og:title" content="MyLink.si"/>
-    <meta property="og:type" content="website"/>
-    <meta property="og:url" content="http://mylink.si"/>
-    <meta property="fb:app_id" content="264106710283984"/>
-    <meta property="og:image" content="http://www.mylink.si/images/wallpapers/wallpaper1-1024x768.jpg"/>
-    <meta property="og:description" content="MyLink is a web application that saves your favourites! Accessibility anywhere and anytime makes it an ideal web application for everyone, who uses multiple computers - home, school, collage, work, etc. and likes to have his favourites on hand." />
-    <link rel="stylesheet" href="/Style/default.css" type="text/css" media="all" />
-    <link rel="shortcut icon" href="/images/icons/favicoBig.ico" />
-    <!--<script type="text/javascript" src="/Scripts/jquery-1.6.1.min.js"></script>-->
-    <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
-    <script type="text/javascript" src="/include/jquery.tablednd_0_5.js"></script>
-    <script type="text/javascript" src="/Scripts/general.js"></script>
-    <script src="http://connect.facebook.net/en_US/all.js"></script>
-	<script type="text/javascript" src="/include/js-class.js"></script>
-	<script type="text/javascript" src="/include/bluff-src.js"></script>
-	<script type="text/javascript" src="/include/excanvas.js"></script>
-    <script type="text/javascript" src="https://apis.google.com/js/plusone.js"></script>
-    <script>
-    FB.init({ 
-        appId:'264106710283984', cookie:true, 
-        status:true, xfbml:true 
-    });
-    </script>
-    <title>
-        <?php
-        global $config;
-        echo $config["siteTitle"];
-        ?>
+	<meta http-equiv="Content-Language" content="SI" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="revisit-after" content="15 days" />
+    <link rel="stylesheet" href="styles/orig.css" type="text/css" media="all" />
+    <!--[if IE]> <link rel="stylesheet" type="text/css" href="styles/orig_ie.css" /> <![endif]--> 
+    <link rel="shortcut icon" href="images/icons/favicon48x48.ico" />
+    <script type="text/javascript" src="include/jquery-1.5.min.js"></script>
+    <script type="text/javascript" src="include/jquery.tablednd_0_5.js"></script>
+    <script type="text/javascript" src="tiny_mce/tiny_mce.js"></script>
+    <script type="text/javascript" src="include/scripts.js"></script>
+	<title>
+    	<?php
+		global $config;
+		echo $config["siteTitle"];
+		?>
     </title>
 </head>
-
 <body>
-    <div id="fb-root"></div>
-		<div id="charmsRightActivate">Swipe in</div>
-		<?php if($_SESSION["portal_status"] == 1) { ?>
-		<div id="addLink">
-			<h1>Add Link</h1>
-			<?php addLink(); ?>
-		</div>
-		<div id="addMap">
-			<h1>Add Folder</h1>
-			<?php addMap(); ?>
-		</div>
-		<div id="sendLink">
-			<h1>Send Link</h1>
-			<?php sendLink(); ?>
-		</div>
-		<div id="charmsRight">
-		<table cellpadding="0" cellspacing="0" align="center" style="height: 100%;">
-			<tr>
-				<td valign="middle">
-					<ul id="ulPageNav">
-						<li class="divMeniItem" onclick="document.location.href='/';"><img src="images/icons/home.png" alt="Home" /><br />Home</li>
-						<li class="divMeniItem" id="dropDown"><img src="images/icons/folder.png" alt="Folders" /><br />Folders</li>
-						<li class="divMeniItem" onclick="document.location.href='index.php?page=search';"><img src="images/icons/search.png" alt="Search" /><br />WWWeb</li>
-						<li class="divMeniItem" onclick="document.location.href='index.php?page=manage';"><img src="images/icons/settings.png" alt="Settings" /><br />Ctrl Panel</li>
-						<li class="divMeniItem" onclick="document.location.href='index.php?page=extras';"><img src="images/icons/extra.png" alt="Extras" /><br />Extras</li>
-						<li class="divMeniItem" onclick="document.location.href='index.php?page=stats';"><img src="images/icons/stats.png" alt="Statistic" /><br />Statistic</li>
-						<li class="divMeniItem" onclick="document.location.href='index.php?page=about';"><img src="images/icons/about.png" alt="About" /><br />About</li>
-						<li class="divMeniItem" onclick="document.location.href='index.php?odjava';"><img src="images/icons/logout.png" alt="Log Out" /><br />Log Out</li>
-					</ul>
-				</td>
-			</tr>
-		</table>
-		</div> 	
-		<?php }
-		else { ?>
-		<div id="charmsRight">
-			<ul id="ulPageNav">
-				<li class="divMeniItem" onclick="document.location.href='/';"><img src="images/icons/home.png" alt="Home" /><br />Home</li>
-				<li class="divMeniItem" onclick="document.location.href='index.php?page=about';"><img src="images/icons/about.png" alt="About" /><br />About</li>
-				<li class="divMeniItem" onclick="document.location.href='index.php?page=register';"><img src="images/icons/register.png" alt="Register" /><br />Register</li>                        
-			</ul> 
-		</div> 			
-	   <?php } ?>   
-    <table id="tableTitle" cellpadding="0" cellspacing="0">
-        <tr>
-            <td id="tdLevoTableTitle">
-				<h1>MyLink.si</h1>
-				<p>Favourites - whenever, wherever</p>
-			</td>
-			<td id="tdDesnoTableTitle"><?php if($_SESSION["portal_status"] == 1) { ?><a href="index.php?page=manageAcc" title="Edit account"><img src="images/icons/user.png" alt="User Pic" /></a>&nbsp;&nbsp;<?php echo $_SESSION["portal_user"]; } ?></td>
-        </tr>
-    </table>
-    <table id="tableMain" align="left" cellpadding="0" cellspacing="0">
-        <tr>
-            <td id="tdContent" align="center">
-            <?php 
+	<div id="divTopRob">
+    	<div id="divTopMeni">
+            <!-- Main menu -->      
+            <?php
+            // logged in or not...
+			if($_SESSION["portal_status"] == 1) {
+				?>
+                <div id="divLoginApplied">
+					Welcome back <?php echo $_SESSION["portal_user"]; ?>! &nbsp; [ <a href="?odjava" title="Log Off">Log Off</a> ]
+                </div>
+                <?php
+			}
+			else {
+    			?>
+                <div id="divLogin">
+                <form name="form1" method="post" action="<?php echo $PHP_SELF; ?>">
+                    <input type="text" name="user_mail" value="e-mail" title="e-mail" onfocus="userField_Focus(this);" onblur="userField_Blur(this);" class="fieldLogin" />&nbsp;&nbsp;
+                    <input id="inputPass" type="password" name="user_pass" title="Geslo" value="Geslo" onfocus="passwordField_Focus(this);" onblur="passwordField_Blur(this);" onkeyup="checkKey(event)" class="fieldLogin" />&nbsp;&nbsp;
+                    <input type="checkbox" name="autologin" value="1" />Remember Me &nbsp;
+    	            <input type="submit" name="potrdi" value="Log in" id="buttonLogIn" /> &nbsp;
+                </form>
+                </div>
+                <?php
+			}
+            //
+			?>
+            <div id="divUlPageNavHolder">
+                <ul id="ulPageNav">
+                    <li class="divMeniItem" onclick="document.location.href='index.php';">Home</li>
+                    <li class="divMeniItem" onclick="document.location.href='?page=about';">About</li>
+                    <?php 
+                    if($_SESSION["portal_status"] == 1) echo "<li class=\"divMeniItem\" onclick=\"document.location.href='?page=stats';\">Statistic</li>";
+                    else echo "<li class=\"divMeniItem\" onclick=\"document.location.href='?page=register';\">Register</li>";  
+                    ?>
+                </ul>
+            </div>
+            <!-- Main content holder -->
+            <div id="divContent0">
+            <div id="divContentMeni">
+            	<h2>Meni</h2>
+                <?php 
+				if($_SESSION["portal_status"] == 1) {
+					?>
+                    <ul>
+                        <li><a href="index.php">Home</a></li>
+                        <li><a href="?page=search">Search WWWeb</a></li>
+                        <br />
+                        <li><a href="#" onclick="menu('links')">Links</a></li>
+                            <ul id="links" class="innerMenu" style="display: none;">
+                            	<?php menuMaps(); ?>
+                            </ul>     
+                        <li><a href="#" onclick="menu('manageLinks')">Send</a></li>
+                            <ul id="manageLinks" class="innerMenu" style="display: none;">
+                            	<li><a href="?page=sendLink">Link</a></li>
+                                <li><a href="?page=sendNote">Note</a></li>
+                            </ul>
+                        <br />
+                        <li><a href="?page=manage">Control Panel</a></li>
+                        <li><a href="?page=extras">Extras</a></li>
+                    </ul>
+                    <?php
+                    if($_SESSION["portal_priv"] == 2) {
+                        ?>
+                        <ul>
+                            <li><a href="admin">Administration</a></li>
+                        </ul>
+                        <?php 
+                    }
+				}
+				else {
+					?>
+					[ you are not logged in ]
+					<?php 
+				} 
+				?>
+            </div>
+            <div id="divContent1">
+					<?php
                     if(isset($_GET["page"])) {
                         switch($_GET['page']) {
                             case "about":
@@ -246,22 +209,33 @@ if(isset($_POST["user_mail"]) && isset($_POST["user_pass"]) && !isset($_POST["ge
                                         Have you ever lost an important link? <br />
                                         Have you ever gone to work and later found out that you have forgotten a link about an <b>important</b> research, written on a pice of paper on the table of your living room?<br />
                                         Have you ever visited a friend wanting to show him an awesome video, music video, online game, etc. and suddenly, you were like: "%:#+@?*! Where did I find that?!?"<br />
+                                        Have you ever lost a list of paper with important notes?
                                     </p>
                                     <p class="pText">
-                                        <b>NOT any more!</b> myLink.si is here just to store your favourite links! <br />
+                                        <b>NOT any more!</b> myLink is here just to store your favourite links and notes! <br />
                                         Accessibility anywhere and anytime makes it an ideal web application for everyone, who uses multiple computers - home, school, collage, work, etc. and likes to have his favourites on hand.<br />
                                         It's very easy to use and once you get used to it, there is no going back to saving your links on notes or USB key in text files. <br />
                                         And by the way. Your given information will not be used in any way, except for statistics. It's absolutely free of charge for all users, so don't worry about that.<br /><br />
                                         So what are you waiting for... Christmas? :) <br />
                                         <a href='?page=register'>Register</a> and start using it! :)<br /><br />
-                                        </p>
+                                        
+                                        <img src="images/graf1.png" alt="How does it work?" title="How does it work?"/>
+                                        <p class="pSubtitles">How does myLink work</p>
                                         
                                         <input class="button" type="submit" value="Register" onclick="document.location.href = 'index.php?page=register';" />
                                         <input class="button" type="submit" value="Add to favourites" onclick="bookmarksite(document.title, 'http://mylink.si');" />
                                         <!--[if IE]><input class="button" type="submit" value="Set as homepage" onclick="this.style.behavior='url(#default#homepage)';this.setHomePage('http://mylink.si');" /><![endif]-->
                                     </p>
                                     <br />
-                                    <img src="images/mail.png" alt="mail" title="e-mail" style="border: 0px;" />
+                                    <h3>Similar design?</h3>
+                                    <p class="pText">
+                                        Why do I remember on facebook when I see this page?<br />
+                                        We figured, that most people use facebook several times a day. In fact, everytime they go on the web they check it. <br />
+                                        Let's say that you have myLink set as your homepage and you have facebook added to your links. 
+                                        When you open your browser you are one click away from facebook, yet you already have the feeling that you are using it... 
+                                        Even better, you are one click away from any page you wish on all computers you use.
+                                    </p>
+                                    <p class="pText"><img src="images/mail.png" alt="mail" title="e-mail" style="border: 0px;" /></p>
                                 <?php
                             break;
                             case "register":
@@ -270,11 +244,16 @@ if(isset($_POST["user_mail"]) && isset($_POST["user_pass"]) && !isset($_POST["ge
                                 <?php
 								register();
                             break;
-                            case "fb_registration_process":
-                                require_once("include/fb_registration_process.php");
-                            break;
-                            case "register_facebook":
-                                require_once("include/register_facebook.php");
+                            case "addNote":
+                                if($_SESSION["portal_status"] != 1) {
+                                    alert("You are not logged in!");
+                                    history(-1);
+                                    break;
+                                }
+                                ?>
+                                    <h1>[ Add Note ]</h1>
+                                <?php
+								addNote();
                             break;
                             case "viewMap":
                                 if($_SESSION["portal_status"] != 1) {
@@ -283,13 +262,36 @@ if(isset($_POST["user_mail"]) && isset($_POST["user_pass"]) && !isset($_POST["ge
                                     break;
                                 }
                                 ?>
-                                    <h1>[ View Folder ]</h1>
+                                    <h1>[ View Map ]</h1>
+                                    <p class="pText">
+                                    <?php
+                                    
+                                    $select = "SELECT * FROM maps WHERE user_id = " . $_SESSION["portal_id"];
+                                	$mydb->query($select);
+                  
+                                	if($mydb->recno() == 0) {
+                                		?>
+                                		<li>No maps</li>
+                                        <?php
+                                	} else {
+                                        while($vrstica = $mydb->row()) {
+                                            if($vrstica["id"] == $_GET["mapId"]) {
+                                                echo $vrstica["name"] . "&nbsp;&nbsp;";
+                                            } else {
+                                                ?>
+                                                <a href="?page=viewMap&mapId=<?php echo $vrstica["id"]; ?>"><?php echo $vrstica["name"]; ?></a>&nbsp;&nbsp;
+                                                <?php
+                                            }
+                                		}
+                                	}
+                                    ?>
+                                    </p>
                                     
                                 <?php
                                 if($_GET["mapId"]) {
                                     $map_id = clean($_GET["mapId"]);
                                     ?>
-                                    <table cellpadding="0" cellspacing="4" id="tableLinksHome">
+                                    <table cellpadding="0" cellspacing="0" id="tableLinksHome">
                                     <?php
     								vsiLinki($_SESSION["portal_id"], 2, $map_id);
                                     ?>
@@ -297,6 +299,43 @@ if(isset($_POST["user_mail"]) && isset($_POST["user_pass"]) && !isset($_POST["ge
                                     <?php
                                 }
                                 
+                            break;
+                            case "sendNote":
+                                if($_SESSION["portal_status"] != 1) {
+                                    alert("You are not logged in!");
+                                    history(-1);
+                                    break;
+                                }
+                                ?>
+                                    <h1>[ Send Note ]</h1>
+                                <?php
+								sendNote();
+                            break;
+                            case "allNotes":
+                                if($_SESSION["portal_status"] != 1) {
+                                    alert("You are not logged in!");
+                                    history(-1);
+                                    break;
+                                }
+                                ?>
+                                    <h1>[ Your Notes ]</h1>
+                                    <table cellpadding="0" cellspacing="0" id="tableLinks">
+                                    <tr>
+                                        <td class="tdLinkHeadder"></td>
+                                        <td class="tdLinkHeadder">Title</td>
+                                        <td class="tdLinkHeadder">Text preview</td>
+                                        <td class="tdLinkHeadder">From</td>
+                                        <td class="tdLinkHeadder">Delete/View</td>
+                                    </tr>
+                                <?php
+								allNotes($_SESSION["portal_id"]);
+                                ?>
+                                    </table>
+                                <?php
+                                if(isset($_GET["viewNote"]))
+                                    viewNote($_SESSION["portal_id"]);
+                                if(isset($_GET["izbrisiNote"]))
+                                    izbrisiNote($_SESSION["portal_id"]);
                             break;
                             case "extras":
                                 if($_SESSION["portal_status"] != 1) {
@@ -307,11 +346,11 @@ if(isset($_POST["user_mail"]) && isset($_POST["user_pass"]) && !isset($_POST["ge
                                 ?>
                                     <h1>[ Extras ]</h1>
                                     <p class="pText">
-                                        <table cellpadding="0" cellspacing="0">
+                                        <table cellpadding="0" cellspacing="0" id="tableRegister">
                                             <tr>
                                                 <td><img src="images/wallpapers/Wallpaper1Small.png" alt="Wallpaper 1" title="Preview" /></td>
                                                 <td>
-                                                    <h3> </h3>
+                                                    <h3>Wallpaper 1:</h3>
                                                     <ul>
                                                         <li><a href="images/wallpapers/wallpaper1-1024x768.jpg" target="_blank">1024x768</a></li>
                                                         <li><a href="images/wallpapers/wallpaper1-1280x1024.jpg" target="_blank">1280x1024</a></li>
@@ -319,6 +358,14 @@ if(isset($_POST["user_mail"]) && isset($_POST["user_pass"]) && !isset($_POST["ge
                                                         <li><a href="images/wallpapers/wallpaper1-1600x1200.jpg" target="_blank">1600x1200</a></li>
                                                         <li><a href="images/wallpapers/wallpaper1-1920x1080.jpg" target="_blank">1920x1080</a></li>
                                                     </ul>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="2">
+                                                    <h3>Userbar:</h3>
+                                                    <img style="border: 0px;" src="images/wallpapers/userbar.png" alt="Userbar" title="Preview" />
+                                                    <input type="text" class="field" value="[img]http://mylink.si/images/wallpapers/userbar.png[/img]" style="width: 360px;" />
+                                                    <p class="pSubtitles">*Copy/Paste code</p>
                                                 </td>
                                             </tr>
                                         </table>
@@ -390,8 +437,8 @@ if(isset($_POST["user_mail"]) && isset($_POST["user_pass"]) && !isset($_POST["ge
                                     break;
                                 }
                                 ?>
-                                    <h1>[ Add Folder ]</h1>
-                                    <p class="pText">Here you can add a folder to organize your links in categories.</p>
+                                    <h1>[ Add Map ]</h1>
+                                    <p class="pText">Here you can add a map to organize your links in categories.</p>
                                 <?php
 								addMap();
                             break;
@@ -402,25 +449,27 @@ if(isset($_POST["user_mail"]) && isset($_POST["user_pass"]) && !isset($_POST["ge
                                     break;
                                 }
                                 ?>
-                                    <h1>[ Manage Folders ]</h1>
-                                    <p class="pText">Folders are organizational units by which you can organize your links. Each link can be assigned to one folder.</p>
-                                    <p class="pText">Manage your folders:</p>
-                                    <table cellpadding="0" cellspacing="0" class="tableLinks2" style="width: 250px;">
+                                    <h1>[ Manage Maps ]</h1>
+                                    <input class="button" type="submit" value="Add Link" onclick="document.location.href = '?page=addLink';" />
+                                    <input class="button" type="submit" value="Add Map" onclick="document.location.href = '?page=addMap';" />
+                                    <p class="pText">Maps are folders by which you can organize your links. Each link can be assigned to one map.</p>
+                                    <p class="pText">Manage your maps:</p>
+                                    <table cellpadding="0" cellspacing="0" id="tableLinks" style="width: 250px;">
                                     <tr>
-                                        <td class="tdLinkHeadder">Folder name</td>
+                                        <td class="tdLinkHeadder">Map name</td>
                                         <td class="tdLinkHeadder">Delete</td>
                                     </tr>
                                 <?php
 								allMaps();
                                 ?>
                                     </table>
-                                    <p class="pSubtitles"><?php echo warning("Deleting a folder will also delete its links!"); ?></p>
-                                    <table cellpadding="0" cellspacing="0" class="tableLinks2" width="500">
+                                    <p class="pSubtitles"><?php echo warning("Deleting a map will also delete its links!"); ?></p>
+                                    <table cellpadding="0" cellspacing="0" id="tableLinks">
                                     <tr>
                                         <td class="tdLinkHeadder">Title</td>
                                         <td class="tdLinkHeadder">Domain</td>
-                                        <td class="tdLinkHeadder">Folder</td>
-                                        <td class="tdLinkHeadder">Home page</td>
+                                        <td class="tdLinkHeadder">Map</td>
+                                        <td class="tdLinkHeadder">Display on home page</td>
                                         <td class="tdLinkHeadder">Delete</td>
                                     </tr>
                                 <?php
@@ -466,57 +515,21 @@ if(isset($_POST["user_mail"]) && isset($_POST["user_pass"]) && !isset($_POST["ge
                                 }
                                 ?>
                                     <h1>[ Statistics ]</h1>
-                                  
+                                    <p class="pText">
                                     <h2>Users:</h2>
-                                        <table cellpadding="0" cellspacing="0" class="tableLinks2" id="pieData" width="400">
-										<thead>
-											<tr>
-												<th scope="col" class="tdLinkHeadderStats">Men</th>
-												<th scope="col" class="tdLinkHeadderStats">Women</th>
-											</tr>
-										</thead>
-										<tbody>
-											<tr>
-												<td scope="row" class="tdLink1"><span class="spanDomainCount"><?php echo usersNum(2); ?></span></td>
-												<td scope="row" class="tdLink1"><span class="spanDomainCount"><?php echo usersNum(3); ?></span></td>
-											</tr>
-                                        </tbody>
-										</table>
-                               
+                                    Currently registered users: <b><?php echo usersNum(1); ?></b>
+                                        <ul>
+                                            <li><b><?php echo usersNum(2); ?></b> men</li>
+                                            <li><b><?php echo usersNum(3); ?></b> women</li>
+                                        </ul>
+                                    </p>
+                                    <p class="pText">
                                         <h2>Top 10 domains:</h2>
-										<table cellpadding="0" cellspacing="0" class="tableLinks2" id="data">
-											<?php linksStats(); ?>
-											<tr>
-												<td colspan="10"><canvas id="graph"></canvas></td>
-											</tr>
-										</table>
-										
-										
-										<div class="bluff-tooltip">
-											<span style="color: #abcdef;"></span>
-										</div>
-										<script type="text/javascript">
-											var g = new Bluff.Bar('graph', '750x320');
-											
-											//***TEME***
-											//g.theme_keynote();
-											g.theme_37signals();
-											//g.theme_rails_keynote();
-											//g.theme_odeo();
-											//g.theme_pastel();
-											//g.theme_greyscale();
-											//***************
-							 				g.set_theme({
-												colors: ['#060']
-											});
-											g.title = 'Top 10 domains';
-											g.hide_legend = true;
-											g.marker_font_size = 10;
-											g.bar_spacing = 0.5;
-											g.tooltips = true;
-											g.data_from_table('data', {orientation: 'cols'});
-											g.draw();
-										</script>
+                                        <ol>
+                                            <?php linksStats(); ?>
+                                        </ol>
+                                        
+                                    </p>
                                 <?php
                             break;
                             case "manageLinks":
@@ -527,7 +540,6 @@ if(isset($_POST["user_mail"]) && isset($_POST["user_pass"]) && !isset($_POST["ge
                                 }
                                 ?>
                                     <h1>[ Manage Homepage Links ]</h1>
-                                    <br /><br /><br />
                                     <script type="text/javascript">
                                    $(document).ready(function() {
                                     	$("#tableLinks").tableDnD();
@@ -551,7 +563,7 @@ if(isset($_POST["user_mail"]) && isset($_POST["user_pass"]) && !isset($_POST["ge
                                     	});
                                     });
                                     </script>
-                                <table cellpadding="0" cellspacing="0" class="tableLinks">
+                                <table cellpadding="0" cellspacing="0" id="tableLinks">
                                     <?php
     								vsiLinki($_SESSION["portal_id"], 1, -1);
                                     ?>
@@ -594,55 +606,40 @@ if(isset($_POST["user_mail"]) && isset($_POST["user_pass"]) && !isset($_POST["ge
                                 <?php
         						editUser($_SESSION["portal_id"]);
                             break;
-                            case "safe":
-                                ?>
-                                    <h1>[ Why secured connection? ]</h1>
-                                    
-                                    <p class="pText">You have probably heard a lot about safety on the web lately.</p>
-                                    <p class="pText">Secured connecion uses an Hypertext Transfer Protocol Secure (HTTPS) which is a combination of the Hypertext Transfer Protocol (HTTP) with SSL/TLS protocol to provide encrypted communication and secure identification of a network web server. HTTPS connections are often used for payment transactions on the World Wide Web and for sensitive transactions in corporate information systems.</p>
-                                    <p class="pText">I know that this may seem as some random jibrish to you, but it really protects your user data. To make this HTTPS work propperly, you have to pay quite a large fee to get the right certificate for my server. That is why the browser warns you, that this site cannot be trusted, because of bad certificates. You can add an exception, so this wont bother you.</p>
-                                    <p class="pText">So... This secured connection is in every way better that normal HTTP protocol. It doesn't send uncoded data through the web, so sniffers and hackers can't see your password in plain text.</p>
-                                    <p class="pText">
-                                        Warnings provided by three of the most used browsers:<br />
-                                        <a href="#" id="ieErrorShow">Internet explorer</a> |
-                                        <a href="#" id="chromeErrorShow">Google Chrome</a> |
-                                        <a href="#" id="firefoxErrorShow">Mozilla Firefox</a>
-                                    </p>
-                                    <p class="pText">
-                                        <div id="ieError"><img src="/images/https/ieHTTPS.png" alt="Internet Explorer error" title="Internet Explorer error" /></div>
-                                        <div id="chromeError"><img src="/images/https/chromeHTTPS.png" alt="Google Chrome error" title="Google Chrome error" /></div>
-                                        <div id="firefoxError"><img src="/images/https/firefoxHTTPS.png" alt="Mozilla Firefox error" title="Mozilla Firefox error" /></div>
-                                    </p>
-                                <?php
-                            break;
                             case "manage":
-                                if($_SESSION["portal_status"] != 1) {
-                                    alert("You are not logged in!");
-                                    history(-1);
-                                    break;
-                                }
                                 ?>
                                 <h1>[ Control Panel ]</h1>
                                 <br />
+                                <input class="button" type="submit" value="Add Link" onclick="document.location.href = '?page=addLink';" />
+                                <input class="button" type="submit" value="Add Note" onclick="document.location.href = '?page=addNote';" />
+                                <input class="button" type="submit" value="Add Map" onclick="document.location.href = '?page=addMap';" />
                                 <br />
                                 <table cellpadding="0" cellspacing="0" id="tableLinksHome">
                                     <tr>
-                                        <td class="tdLinkHome tdLinkHome<?php echo rand(1,6);?>" onclick="document.location.href = 'index.php?page=allMaps';">
+                                        <td class="tdLinkHome" onclick="document.location.href = '?page=allMaps';">
                                             <p class="pLinkName">Links</p>
                                             <p class="pLinkDomain">Manage your links</p>
-                                            <p class="pLinkUrl">Set your home page, divide links into folders, ...</p>
+                                            <p class="pLinkUrl">Set your home page, divide links into maps, ...</p>
                                         </td>
                                         <td>&nbsp; &nbsp;</td>
-                                        <td class="tdLinkHome tdLinkHome<?php echo rand(1,6);?>" onclick="document.location.href = 'index.php?page=manageLinks';">
-                                            <p class="pLinkName">Home Page</p>
-                                            <p class="pLinkDomain">Manage your Home Page</p>
-                                            <p class="pLinkUrl">Change the order of links on your Home Page, delete, ...</p>
+                                        <td class="tdLinkHome" onclick="document.location.href = '?page=allNotes';"> 
+                                            <p class="pLinkName">Notes</p>
+                                            <p class="pLinkDomain">Manage your links</p>
+                                            <p class="pLinkUrl">See your notes, edit, delete, ...</p>
                                         </td>
                                         <td>&nbsp; &nbsp;</td>
-                                        <td class="tdLinkHome tdLinkHome<?php echo rand(1,6);?>" onclick="document.location.href = 'index.php?page=manageAcc';">
+                                        <td class="tdLinkHome" onclick="document.location.href = '?page=manageAcc';">
                                             <p class="pLinkName">Account</p>
                                             <p class="pLinkDomain">Manage your account</p>
                                             <p class="pLinkUrl">Change your mail, password, ...</p>
+                                        </td>
+                                    </tr>
+                                        <td colspan="5"><br /></td>
+                                    <tr> 
+                                        <td class="tdLinkHome" onclick="document.location.href = '?page=manageLinks';">
+                                            <p class="pLinkName">Home Page</p>
+                                            <p class="pLinkDomain">Manage your Home Page</p>
+                                            <p class="pLinkUrl">Change the order of links on your Home Page, delete, ...</p>
                                         </td>
                                     </tr>
                                 </table>
@@ -654,7 +651,13 @@ if(isset($_POST["user_mail"]) && isset($_POST["user_pass"]) && !isset($_POST["ge
                         if($_SESSION["portal_status"] == 1) {
                             ?>
                             <h1>[ My Links ]</h1>
-                            <table cellpadding="0" cellspacing="4" id="tableLinksHome">
+                            <input class="button" type="submit" value="Add Link" onclick="document.location.href = '?page=addLink';" />
+                            <input class="button" type="submit" value="Add Note" onclick="document.location.href = '?page=addNote';" />
+                            <?php
+                            defaultBrowser($_SESSION["portal_id"]);
+                            ?>
+                            <p class="pText">Here are your links <?php echo $_SESSION["portal_user"] ?>:</p>
+                            <table cellpadding="0" cellspacing="0" id="tableLinksHome">
                                     <?php
     								vsiLinki($_SESSION["portal_id"], 2, -1);
                                     ?>
@@ -664,33 +667,19 @@ if(isset($_POST["user_mail"]) && isset($_POST["user_pass"]) && !isset($_POST["ge
                         }
                         else {
 						?>
-                             <h1>[ Welcome ]</h1>
-                            <form name="form1" method="post" action="<?php echo $PHP_SELF; ?>">
-                                <table align="center">
-                                    <tr>
-                                        <td>
-                                            <input type="text" name="user_mail" value="e-mail" title="e-mail" onfocus="userField_Focus(this);" onblur="userField_Blur(this);" class="field" />
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <input id="inputPass" type="password" name="user_pass" title="Geslo" value="Geslo" onfocus="passwordField_Focus(this);" onblur="passwordField_Blur(this);" onkeyup="checkKey(event)" class="field" />
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <input type="checkbox" name="autologin" value="1" />Remember Me
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                            	            <input type="submit" name="potrdi" value="Log in" class="button" /><br /><br /> 
-                                            <a href="index.php?page=register">Register</a> | <a href="https://mylink.si">Secured connection</a>[<a href="index.php?page=safe">?</a>] <!--<fb:login-button perms="email">Login</fb:login-button>-->
-                                        </td>
-                                    </tr>
-								</table>
-                            </form>
-                            <br /><br />
+                            <h1>[ Welcome ]</h1>
+                            <p class="pText">Hello there!<br />
+                            If you are having troubles remembering your links, you have come to the right place! Try using myLink. It is awesome.
+                            </p>
+                            <p class="pText">For more info read the <a href="index.php?page=about">about</a> section. :)
+                            <input class="button" type="submit" value="Register" onclick="document.location.href = 'index.php?page=register';" />
+                            <input class="button" type="submit" value="Add to favourites" onclick="bookmarksite(document.title, 'http://mylink.si');" />
+                            <!--[if IE]><input class="button" type="submit" value="Set as homepage" onclick="this.style.behavior='url(#default#homepage)';this.setHomePage('http://mylink.si');" /><![endif]--><br />
+                            <img src="images/graf2.png" alt="graf2" title="Stop!" style="border: 0px;" />
+                            <p class="pSubtitles">Don't use notes and USB keys for saving links!</p>
+							<img src="images/sample.png" alt="Sample" title="Sample of a registered user" />
+                            <p class="pSubtitles">Sample of an user interface</p>
+                            </p>
                             <?php
                         }
                     } 
@@ -698,29 +687,13 @@ if(isset($_POST["user_mail"]) && isset($_POST["user_pass"]) && !isset($_POST["ge
                         izbrisiLink($_SESSION["portal_id"]);
                     }
 					?>
-            </td>
-        </tr>
-    </table>
-	<?php if($_SESSION["portal_status"] == 1) { ?>
-	<div id="folders">
-		<ul class="innerMenu">
-			<?php menuMaps(); ?>   
-		</ul>
-	</div>
-	<div id="charmsBottomActivate">Swipe in</div>
-	<div id="charmsBottom">
-		<?php defaultBrowser($_SESSION["portal_id"]); ?>
-		&nbsp;&nbsp;&nbsp;&nbsp;
-		<input class="button" id="addLinkButton" type="submit" value="Add Link" />
-		<input class="button" id="addMapButton" type="submit" value="Add Folder" />
-		<input class="button" id="sendLinkButton" type="submit" value="Send Link" />
-	</div>
-	<?php } ?>
-	<script type="text/javascript">
-	//** LINKI **
-	setTimeout(function() {$('.tdLinkHome').slideDown();},600);
-	//****
-	</script>
+    			</div>
+                <div id="divCopyright"><!--[if IE]>[ <a href="" onClick="this.style.behavior='url(#default#homepage)';this.setHomePage('http://mylink.si');">Set myLink as my home page!</a> ] <![endif]-->
+ &nbsp;[&nbsp;&copy; myLink 2011 &nbsp;] &nbsp;[ <a href="" onclick="bookmarksite(document.title, 'http://mylink.si');">Add myLink to favourites!</a> ] &nbsp; [<a href="?page=addLink">Add Link</a> | <a href="?page=addNote">Add Note</a>]</div>
+    		</div>
+        </div>
+        <!-- Small logo top right -->
+        <!--<div id="divLogoTop"><img src="images/logoMali.png" title="Logo" height="30" width="80" alt="LogoBeli" />[ myLink ]</div>  -->     
+    </div> 
 </body>
 </html>
-<?php } ?>

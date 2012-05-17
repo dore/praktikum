@@ -1,0 +1,541 @@
+body {
+	font-family: tahoma,verdana,arial,sans-serif; 
+	font-size: 11px;
+	font-variant: normal; 
+	font-style: normal; 
+	font-weight: normal; 
+	color: #000; 
+	text-decoration: none;
+	margin: 0px;
+}
+
+h1 {
+	margin-bottom: 5px;
+}
+
+h2 {
+	text-decoration: underline;
+}
+
+img {
+    border: 0px;
+}
+
+select {
+	border: 1px solid #030;
+	height: 25px;
+	margin: 0px;
+	padding: 2px;
+	color: #000;
+    background: #b7e6a1/*url(../images/greenBck.png) repeat 0 0*/;
+    font-weight: bold;
+}
+
+ul {
+	text-align: left;
+	list-style-image: url(../images/page_right.gif);
+}
+
+.innerMenu {
+    padding-left: 15px;
+    list-style: square;
+}
+
+a:link {
+	color: #060;
+	text-decoration: none;
+}
+
+a:visited {
+	color: #060;
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+	color: #060;
+}
+
+a:active {
+	color: #999;
+	text-decoration: underline;
+}
+
+#divTopRob {
+	padding-top: 10px;
+	margin-right: auto;
+	/*width: 100%;*/
+	background-color: #060;
+	height: 29px;
+	text-align: center;
+}
+
+#divTopMeni {
+	display: inline-block;
+	padding-right: auto;
+	padding-left: auto;
+	margin-left: auto;
+	margin-bottom: 0px;
+	margin-right: auto;
+	width: 980px;
+	border: 1px solid #030;
+	background-color: #67a54b;
+	border-bottom: 0px;
+	height: 18px;
+	text-align: left;
+	padding-top: 10px;
+    
+}
+
+#divLogoTop {
+	width: auto;
+	display: inline;
+	position: absolute;
+	right: 20px;
+	top: 5px;
+    font-size: 15px;
+    font-weight: bold;
+    color: #FFF;
+}
+
+#divLogin {
+	display: inline-block;
+	position: relative;
+	left: 10px;
+	margin-top: -7px;
+	vertical-align: middle;
+	width: 759px;
+}
+
+#divLoginApplied {
+	display: inline-block;
+	position: relative;
+	left: 15px;
+	margin-top: -7px;
+	margin-left: -5px;
+    margin-bottom: 6px;
+    padding-top: 1px;
+	vertical-align: middle;
+	width: 764px;
+	color: #FFF;
+	font-size: 13px;
+}
+
+#divLoginApplied a:link {
+	text-decoration: none;
+	color: #000;
+	font-size: 11px;
+	font-weight: normal;
+}
+
+#divLoginApplied a:visited {
+	text-decoration: none;
+	color: #000;
+	font-size: 11px;
+	font-weight: normal;
+}
+
+#divLoginApplied a:hover {
+	text-decoration: none;
+	color: #000;
+	font-size: 11px;
+	font-weight: normal;
+	text-decoration: underline;
+}
+
+.divMeniItem {
+	cursor: pointer;
+	padding-right: 11px;
+	padding-left: 10px;
+    padding-top: 7px;
+    padding-bottom: 1px;
+    margin-bottom: -1px;
+    margin-top: -7px;
+	font-size: 11px;
+	font-weight: bold;
+	color: #FFF;
+    display: inline-block;
+    float: left;
+    height: 20px;
+}
+
+#ulPageNav {
+    list-style-type: none;
+    list-style-image: none;
+}
+
+#divUlPageNavHolder {
+    display: inline-block;
+    margin-top: -14px;
+    float: right;
+}
+
+.divMeniItem a:link {
+	text-decoration: none;
+	color: #FFF;
+}
+
+.divMeniItem a:visited {
+	text-decoration: none;
+	color: #FFF;
+}
+
+.divMeniItem:hover, .divMeniItem:focus, .divMeniItem:active {
+	background-color: #060;
+}
+
+#divContent0 {
+	position: relative;
+	top: 17px;
+	display: block;
+	margin-top: -15px;
+	width: 100%;
+	text-align: center;
+	margin-left: -1px;
+	height: auto;
+	border: 1px solid #999;
+	border-top: 0px;
+	width: 980px;
+    min-height: 550px;
+}
+
+#divContent1 {
+	position: relative;
+	left: 155px;
+	text-align: left;
+	padding-top: 4px;
+	font-size: 13px;
+	padding-bottom: 14px;
+	width: 800px;
+    background: url("../images/backgroundContent.png") no-repeat bottom right;
+    min-height: 500px;
+}
+
+#divContent1 img {
+	border: 1px solid #999;
+    margin: 8px;
+    margin-bottom: 0px;
+}
+
+#divContentMeni {
+	position: absolute;
+	top: 15px;
+	padding-right: 10px;
+	margin-left: 3px;
+	margin-right: 5px;
+	text-align: right;
+	width: 130px;
+	height: 85%;
+	border-right: 1px dashed #999;
+	vertical-align: middle;
+    overflow: auto;
+    min-height: 250px;
+}
+
+#divContentMeni a:link {
+	color: #060;
+	text-decoration: none;
+}
+
+#divContentMeni a:visited {
+	color: #060;
+	text-decoration: none;
+}
+
+#divContentMeni a:hover {
+	color: #060;
+	text-decoration: underline;
+}
+
+#divContentMeni a:active {
+	color: #999;
+	text-decoration: underline;
+}
+
+#divContent1 a:link {
+	color: #060;
+	font-weight: bold;
+	text-decoration: none;
+}
+
+#divContent1 a:visited {
+	color: #060;
+	font-weight: bold;
+	text-decoration: none;
+}
+
+#divContent1 a:hover {
+	color: #060;
+	text-decoration: underline;
+}
+
+#divContent1 a:active {
+	color: #999;
+	text-decoration: underline;
+}
+
+#divContentPic {
+    padding-top: 30px;
+    font-size: 10px;
+    color: #999;
+}
+
+.ulResolucije {
+    position: relative;
+    left: 20px;
+}
+
+#divCopyright {
+	margin-left: 45px;
+	border-top: 1px dashed #999;
+	width: 90%;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	margin-top: 10px;
+	text-align: center;
+	color: Gray;
+}
+
+#tableRegister {	
+	margin-left: 30px;
+	margin-top: 20px;
+	padding: 5px;
+    width: 500px;
+	background-color: #F7F7F7;
+}
+
+.field {
+	border: 1px solid #030;
+	background-color: #b7e6a1;
+	padding: 2px;
+	font-size: 13px;
+	color: #000;
+	font-weight: bold;
+	width: 200px;
+    height: 17px;
+    /*background: #eee url(../images/greenBck.png) repeat 0 0;*/
+}
+
+.fieldTextTitle {
+	border: 1px solid #030;
+	background-color: #b7e6a1;
+	padding: 2px;
+	font-size: 13px;
+	color: #000;
+	font-weight: bold;
+	width: 450px;
+    height: 17px;
+    /*background: #eee url(../images/greenBck.png) repeat 0 0;*/
+}
+
+.fieldLogin {
+	border: 1px solid #030;
+	background-color: #FFF;
+	margin: 0px;
+	padding: 2px;
+	color: #000;
+}
+
+.button {
+    background: #eee url(../images/grayBck.png) repeat 0 0;
+    border:1px solid #999;
+    border-bottom-color:#888;
+    cursor: pointer;
+    font-size: 11px;
+    font-weight: bold;
+    line-height: normal;
+    padding:2px 5px;
+    text-align:center;
+    text-decoration:none;
+    vertical-align:top;
+    white-space:nowrap;
+    height: 23px;
+}
+
+.button:hover {
+	border: 1px solid #030;
+	cursor: pointer;
+}
+
+#buttonLogIn {
+    background: #060 url(../images/greenBck.png) repeat 0 0;
+    border:1px solid #060;
+    border-bottom: 1px solid #030;
+    cursor: pointer;
+    font-size: 11px;
+    font-weight: bold;
+    line-height: normal;
+    padding:2px 6px;
+    text-align:center;
+    text-decoration:none;
+    white-space:nowrap;
+    height: 22px;
+    color: #FFF;
+}
+
+#divPotrdiCrta {
+	width: 90%;
+	border-top: 1px dashed #999;
+	padding-bottom: 6px;
+	margin-top: 6px;
+}
+
+#tableLinks {
+    margin-left: 30px;
+    margin-top: 20px;
+	width: 650px;
+	background-color: #F7F7F7;
+    border: 1px solid #999;
+}
+
+#tableLinks img {
+    border: 0px;
+}
+
+#tableUsers {
+    margin-left: 30px;
+    margin-top: 20px;
+	width: 750px;
+	background-color: #F7F7F7;
+    border: 1px solid #999;
+}
+
+#tableUsers img {
+    border: 0px;
+}
+
+#tableLinksHome {
+    margin-left: 55px;
+    margin-top: 20px;
+}
+
+.tdLinkHeadder {
+	background-color: #060;
+	text-align: center;
+    color: #FFF;
+    height: 20px;
+    cursor: default;
+}
+
+.tdLink1 {
+    background-color: #DDDDDD;
+	text-align: center;
+    color: #000;
+    height: 35px;
+}
+
+.tdLink2 {
+    background-color: #F7F7F7;
+	text-align: center;
+    color: #000;
+    height: 35px;
+}
+
+.tdLinkHome {
+    background-color: #F7F7F7;
+	text-align: center;
+    color: #000;
+    height: 30px;
+    border: 1px solid #999;
+    height: 60px;
+    width: 200px;
+    padding: 4px;
+    border-collapse: collapse;
+}
+
+.tdLinkHome:hover {
+    background-color: #FFE8DD;
+	text-align: center;
+    color: #000;
+    height: 30px;
+    cursor: pointer;
+    border: 1px solid #999;
+    padding: 4px;
+    border-collapse: collapse;
+}
+
+.warning {
+	background-color: #FFDFDF;
+	color: #000;
+	border: 1px solid maroon;
+    padding: 3px;
+    width: 400px;
+}
+
+.error {
+	background-color: #FFD9D9;
+	color: #000;
+	border: 1px solid #F00;
+    padding: 3px;
+    width: 400px;
+}
+
+.info {
+	background-color: #DDDDFF;
+	color: #000;
+	border: 1px solid #00C;
+    padding: 3px;
+    width: 400px;
+}
+
+.pLinkName {
+    font-weight: bold;
+    color: #060;
+    font-size: 20px;
+}
+
+.pLinkDomain {
+    font-weight: normal;
+    color: #000;
+    font-size: 12px;
+}
+
+.pLinkSender {
+    font-weight: normal;
+    color: #C60000;
+    font-size: 10px;
+}
+
+.pLinkUrl {
+    font-weight: normal;
+    color: #999;
+    font-size: 9px;
+}
+
+.pSubtitles {
+    font-weight: normal;
+    color: #999;
+    font-size: 11px;
+    padding-left: 10px;
+}
+
+.pText {
+    padding: 10px;
+    padding-bottom: 0px;
+    font-weight: normal;
+    color: #000;
+    font-size: 13px;
+}
+
+.spanDomain {
+    color: #060;
+}
+
+.spanDomainCount {
+    color: #999;
+    font-size: 10px;
+}
+
+#txtHint ul {
+    list-style-type: none;
+    list-style-image: none;
+    cursor: pointer;
+}
+
+.txtHintItem {
+	cursor: pointer;
+	font-size: 12px;
+	font-weight: bold;
+	color: #000;
+    margin-left: 14px;
+}
